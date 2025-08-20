@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
-namespace WebApplication1.Models
+namespace WebApplication1.DTO
 {
-    public class User
+    public class AddUsersDTO
     {
-        public int Id { get; set; }
-
         [Required]
         [StringLength(30, ErrorMessage = "Invalid Name")]
         public string Name { get; set; } = String.Empty;
@@ -23,6 +21,5 @@ namespace WebApplication1.Models
 
         [Range(0.0, 4.0, ErrorMessage = "Invlaid CGPA")]
         public decimal Cgpa { get; set; }
-
     }
 }

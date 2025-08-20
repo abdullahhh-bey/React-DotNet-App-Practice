@@ -14,7 +14,7 @@ namespace WebApplication1.Controllers
     {
 
         //This is the DbConext Injection
-        private DbContext _dbContext;
+        private readonly DbContext _dbContext;
         public UserinfoController(DbContext dbContext)
         {
             _dbContext = dbContext;
