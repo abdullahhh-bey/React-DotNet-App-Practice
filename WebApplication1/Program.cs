@@ -5,6 +5,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1. Add services (Dependency Injection)
 
+//Adding Aauto Mapper
+builder.Services.AddAutoMapper(typeof(Program)); // Scans for profiles in the assembly containing Program
+
 // Add controllers
 builder.Services.AddControllers();
 
