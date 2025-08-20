@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebApplication1.Data;
+using WebApplication1.DTO;
+using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
@@ -15,12 +18,12 @@ namespace WebApplication1.Controllers
     {
 
         //This is the DbConext Injection
-        private readonly DbContext _dbContext;
+        private readonly UserAppDbContext _dbContext;
 
         //This is the Aauto Mapper Injection
         private readonly IMapper _mapper;
 
-        public UserinfoController(DbContext dbContext, IMapper mapper)
+        public UserinfoController(UserAppDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -28,7 +31,96 @@ namespace WebApplication1.Controllers
 
 
         //Actions/Endpoints
-        
+
+        //Get Method
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await _dbContext.Users.ToListAsync();
+            if (users is null)
+            {
+                return NotFound("No Users!");
+            }
+            var userDto = _mapper.Map<UsersInfoDTO>(users);
+            return Ok(userDto);
+        }
+
+
+        //Get by Id
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            if (id == 0)
+            {
+                return BadRequest("0 can't be an ID");
+            }
+
+            var user = await _dbContext.Users.FindAsync(id);
+            if (user is null)
+            {
+                return NotFound("No User Found");
+            }
+            var userDto = _mapper.Map<UsersInfoDTO>(user);
+            return Ok(userDto);
+        }
+
+
+
+        //Post Method
+        [HttpPost]
+        public async Task<IActionResult> AddNewUser([FromBody] AddUsersDTO user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Incomplete Information");
+            }
+
+            var userEntity = _mapper.Map<User>(user);
+            await _dbContext.Users.AddAsync(userEntity);
+            await _dbContext.SaveChangesAsync();
+            return CreatedAtAction("GetUserById", new { Id = userEntity.Id }, user);
+        }
+
+
+
+
+        //Put Method
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUsersDTO user)
+        {
+            if (id != user.Id)
+            {
+                return BadRequest("Id Mismatched!");
+            }
+
+            var u = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+            if (u is null)
+            {
+                return NotFound("No User");
+            }
+
+            _mapper.Map(user, u);
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(u); // return updated user
+        }
+
+
+
+        //Delete a User
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var user = await _dbContext.Users.FindAsync(id);
+            if (user is null)
+            {
+                return NotFound("No User.");
+            }
+            _dbContext.Users.Remove(user);
+            await _dbContext.SaveChangesAsync();
+            return NoContent();
+        }
 
 
     }
