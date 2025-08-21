@@ -92,7 +92,7 @@ namespace WebApplication1.Controllers
 
         //Put Method
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser( int id, [FromBody] UpdateUsersDTO user)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUsersDTO user)
         {
             if (id != user.Id)
             {
@@ -113,7 +113,7 @@ namespace WebApplication1.Controllers
 
             _mapper.Map(user, u);
             await _dbContext.SaveChangesAsync();
-            return Ok(u); 
+            return Ok(u);
         }
 
 
