@@ -15,7 +15,8 @@ namespace WebApplication1.Mapping
 
             //Creating Auto Mapping from DTO's to Entity and vice versa 
             CreateMap<User, UsersInfoDTO>(); //entity to DTO -> GET
-            CreateMap<UpdateUsersDTO, User>(); //Dto to entity -> PUT
+            CreateMap<UpdateUsersDTO, User>()
+            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<AddUsersDTO, User>(); //Dto to entity -> POST
         }
     }

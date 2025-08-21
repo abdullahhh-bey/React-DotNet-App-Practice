@@ -37,11 +37,11 @@ namespace WebApplication1.Controllers
         public async Task<IActionResult> GetUsers()
         {
             var users = await _dbContext.Users.ToListAsync();
-            if (users is null)
+            if (users.Count == 0)
             {
                 return NotFound("No Users!");
             }
-            var userDto = _mapper.Map<UsersInfoDTO>(users);
+            var userDto = _mapper.Map<List<UsersInfoDTO>>(users);
             return Ok(userDto);
         }
 
@@ -75,6 +75,12 @@ namespace WebApplication1.Controllers
                 return BadRequest("Incomplete Information");
             }
 
+            var doesExist = await _dbContext.Users.AnyAsync(x => x.Email == user.Email);
+            if (doesExist)
+            {
+                return BadRequest("Email Already Registered");
+            }
+
             var userEntity = _mapper.Map<User>(user);
             await _dbContext.Users.AddAsync(userEntity);
             await _dbContext.SaveChangesAsync();
@@ -86,7 +92,7 @@ namespace WebApplication1.Controllers
 
         //Put Method
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUsersDTO user)
+        public async Task<IActionResult> UpdateUser( int id, [FromBody] UpdateUsersDTO user)
         {
             if (id != user.Id)
             {
@@ -99,11 +105,15 @@ namespace WebApplication1.Controllers
                 return NotFound("No User");
             }
 
+            var doesExist = await _dbContext.Users.AnyAsync(x => x.Email == user.Email);
+            if (doesExist)
+            {
+                return BadRequest("Email Already Registered");
+            }
+
             _mapper.Map(user, u);
-
             await _dbContext.SaveChangesAsync();
-
-            return Ok(u); // return updated user
+            return Ok(u); 
         }
 
 
