@@ -1,7 +1,10 @@
 import React from 'react'
 import './Card.css'
 
-const Card = () => {
+const Card = ({ name, email, course, cgpa }) => {
+
+    const titleName = name.substr(0,2).toUpperCase();
+
   return (
     <>
     <div style={{
@@ -20,11 +23,10 @@ const Card = () => {
             color : "white"
            }}>
             <h1 className="display-5">
-                HA
+                {titleName}
             </h1>
 
-
-            <p style={{
+        {cgpa >= 3.5 && <p style={{
             position: "absolute",
             top: "0px",
             right: "0px",
@@ -36,16 +38,17 @@ const Card = () => {
             fontWeight: "medium",
             }}>
                 Topper
-            </p>
-
+            </p>}
 
         </div>
         <div className="card-body">
-            <h5 className="card-title my-3 name">John Abdullah </h5> 
-            <p className=" email">Email: a@example.com</p>
-            <p className=" email">Course Enrolled: Course.</p>
-            <p className=" email">CGPA: </p>
-            <p className="card-text mb-2 cgpa"><small className="text-body-secondary fw-bold">Senior</small></p>
+            <h5 className="card-title my-3 name">{name} </h5> 
+            <p className=" email">Email: {email}</p>
+            <p className=" course">Courses Enrolled: <b>{course}</b></p>
+            <h6 className="my-4 cgpa">{cgpa > 0 ? `CGPA:  ${cgpa}` : 'New Admission'}</h6>
+            <p className="card-text mb-2 cgpa"><small className="text-body-secondary fw-bold">
+                {cgpa > 0 ? 'Sernior' : 'Junior' }
+                </small></p>
         </div>
     </div>
     </>

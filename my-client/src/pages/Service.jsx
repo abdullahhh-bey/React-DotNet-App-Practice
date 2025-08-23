@@ -10,6 +10,7 @@ const Service = () => {
                 width : "100%",
                 height : "80vh",
             }}>
+              
                     <PersonList />
             </div>
     </div>
