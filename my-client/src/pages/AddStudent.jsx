@@ -53,7 +53,7 @@ const AddStudent = () => {
     const handleSubmit = async () => {
         setAlert(true)
         setLoading(true);
-        await apiCall.post('/userinfo' , user)
+        await apiCall.post('/userinfo' , {...user, course: user.course.toUpperCase()})
         .then(res => {
             
                 setResponse(res.statusText)

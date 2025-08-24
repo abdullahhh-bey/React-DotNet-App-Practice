@@ -45,7 +45,7 @@ const DeleteUser = () => {
             if(alert){
                 setTimeout(() => {
                     setAlert(false)
-                }, 4000)
+                }, 6000)
             }
         },[alert])
 

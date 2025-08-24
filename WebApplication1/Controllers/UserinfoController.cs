@@ -122,7 +122,7 @@ namespace WebApplication1.Controllers
         [HttpDelete("{email}")]
         public async Task<IActionResult> DeleteUser(string email)
         {
-            var user =  _dbContext.Users.FirstOrDefault(u => u.Email == email);
+            var user = _dbContext.Users.FirstOrDefault(u => u.Email == email);
             if (user is null)
             {
                 return NotFound("No User.");
@@ -132,6 +132,69 @@ namespace WebApplication1.Controllers
             return NoContent();
         }
 
+
+        //Get User with Course ( filter )
+        [HttpGet("by-course")]
+        public async Task<IActionResult> GetUsersInCourse([FromQuery] string course)
+        {
+            if (course.Length == 0)
+            {
+                return BadRequest("Enter Valid Course");
+            }
+
+            var user = await _dbContext.Users
+            .Where(u => u.Course == course)
+            .OrderByDescending(u => u.Cgpa)
+            .ToListAsync();
+
+            if (user.Count == 0)
+            {
+                return NotFound($"No User in {course.ToUpper()}");
+            }
+
+            var userDto = _mapper.Map<UsersInfoDTO>(user);
+            return Ok(userDto);
+        }
+
+
+        //Get User with email ( filter )
+        [HttpGet("by-email")]
+        public async Task<IActionResult> GetUsersByEmail([FromQuery] string email)
+        {
+            if (email.Length == 0)
+            {
+                return BadRequest("Enter Valid Email");
+            }
+
+            var user = await _dbContext.Users
+            .Where(u => u.Email == email)
+            .ToListAsync();
+
+            if (user.Count == 0)
+            {
+                return NotFound($"No User in {email}");
+            }
+
+            var userDto = _mapper.Map<UsersInfoDTO>(user);
+            return Ok(userDto);
+        }
+
+
+        //Get only Courses
+        //I made this so that i can makje list of it ( options ) for users to select the course and get the student 
+        [HttpGet("courses")]
+        public async Task<IActionResult> GetCourse()
+        {
+            var courses = await _dbContext.Users
+            .Select(c => c.Course)
+            .Distinct()
+            .ToListAsync();
+            if (courses.Count == 0)
+            {
+                return NotFound("No Courses");
+            }
+            return Ok(courses);
+        }
 
     }
 }
