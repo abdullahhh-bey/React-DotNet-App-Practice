@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Button from '../components/Button'
 import apiCall from '../services/axios'
 import Loading from '../components/Loading'
 
 const AddStudent = () => {
 
+    const [alert, setAlert] = useState(true);
     const [success, setSuccess] = useState(false)
     const [response, setResponse] = useState('')
     const [errorValue, setErrorValue] = useState('')
@@ -29,6 +30,14 @@ const AddStudent = () => {
         })
     }
 
+    useEffect(() => {
+        if(alert){
+            setTimeout(() => {
+                setAlert(false)
+            }, 4000)
+        }
+    },[alert])
+
     //it will handle change
     const handleOnChange = (e) => {
         setUser({
@@ -42,6 +51,7 @@ const AddStudent = () => {
 
     //it will call the api with the useEffect and user
     const handleSubmit = async () => {
+        setAlert(true)
         setLoading(true);
         await apiCall.post('/userinfo' , user)
         .then(res => {
@@ -77,18 +87,8 @@ const AddStudent = () => {
    
     return (
         <>
-            <div className="container-fluid">
-                <div style={{
-                    paddingTop: "50px",
-                    width: "100%",
-                    height: "80vh",
-                    display : "flex",
-                    flexDirection: "column",
-                    justifyContent : "center",
-                    alignItems : "center",
-                }}>
-                    {error || success ? (
-                        <div
+        { alert && (error || success) ? (
+                         <div
                             className={`alert alert-${error ? 'danger': 'success'} alert-dismissible fade show`}
                             style={{ width: '100%' }}
                             role="alert">
@@ -102,6 +102,15 @@ const AddStudent = () => {
                             ></button>
                         </div>
                         ) : ('')}
+            <div className="container-fluid">
+                <div style={{
+                    width: "100%",
+                    height: "80vh",
+                    display : "flex",
+                    flexDirection: "column",
+                    justifyContent : "center",
+                    alignItems : "center",
+                }}>
                     <h1 className="my-5">Add a Student</h1>
 
                         <div className="col-lg-4">

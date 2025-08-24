@@ -119,10 +119,10 @@ namespace WebApplication1.Controllers
 
 
         //Delete a User
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        [HttpDelete("{email}")]
+        public async Task<IActionResult> DeleteUser(string email)
         {
-            var user = await _dbContext.Users.FindAsync(id);
+            var user =  _dbContext.Users.FirstOrDefault(u => u.Email == email);
             if (user is null)
             {
                 return NotFound("No User.");

@@ -6,6 +6,7 @@ import AboutUs from './pages/AboutUs';
 import Service from './pages/Service';
 import ContactUs from './pages/ContactUs';
 import AddStudent from './pages/AddStudent';
+import DeleteUser from './pages/DeleteUser';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Route path="/aboutus" element={<AboutUs />} />
       <Route path="/services" element={<Service />} />
       <Route path="/add-student" element={<AddStudent />} />
+      <Route path="/remove-student" element={<DeleteUser />} />
       <Route path="/contactus" element={<ContactUs />} />
     
     </Routes>
