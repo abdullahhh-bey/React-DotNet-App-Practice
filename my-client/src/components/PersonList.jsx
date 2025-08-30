@@ -18,6 +18,22 @@ const PersonList = () => {
         fetchUsers();
     }, [])
 
+
+    const handleUpdate = (updatedStudent) => {
+        const newUser = users.map((u => {
+            if(u.id === updatedStudent.id){
+                return {
+                    ...u,
+                    updatedStudent
+                }
+            } else{
+                return u;
+            }
+        }
+    ))
+     setUsers(newUser)    
+    }
+
     if(error !== ""){
         return (
         <div style={{
@@ -42,7 +58,8 @@ const PersonList = () => {
                     return (
                         <div key={user.id} className='col-lg-3 col-md-6 my-4 '>
                             <Card name={user.name} email={user.email} 
-                            course={user.course} cgpa={user.cgpa}/>
+                            course={user.course} cgpa={user.cgpa} id={user.id}
+                            onStudentUpdated={handleUpdate}/>
                         </div>
                     );
                 })

@@ -91,27 +91,40 @@ namespace WebApplication1.Controllers
 
 
         //Put Method
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUsersDTO user)
+        [HttpPut("update/{email}")]
+        public async Task<IActionResult> UpdateUser(string email, [FromBody] UpdateUsersDTO dto)
         {
-            if (id != user.Id)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Id Mismatched!");
+                return BadRequest(ModelState); // this will tell you *why* 400 happened
             }
 
-            var u = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
-            if (u is null)
+            var u = _dbContext.Users.SingleOrDefault(x => x.Email == email);
+            if (u == null)
             {
-                return NotFound("No User");
+                return NotFound();
+            }
+            if (!string.IsNullOrEmpty(dto.Name))
+                u.Name = dto.Name;
+
+            if (!string.IsNullOrEmpty(dto.Course))
+                u.Course = dto.Course;
+
+            if (dto.Cgpa != 0)
+                u.Cgpa = dto.Cgpa;
+
+            if (!string.IsNullOrEmpty(dto.Email) && u.Email != dto.Email)
+            {
+                var checkEmail = await _dbContext.Users.AnyAsync(s => s.Email == dto.Email);
+                if (checkEmail)
+                {
+                    return BadRequest("Email Already Exist!");
+                }
+                u.Email = dto.Email;
             }
 
-            var doesExist = await _dbContext.Users.AnyAsync(x => x.Email == user.Email);
-            if (doesExist)
-            {
-                return BadRequest("Email Already Registered");
-            }
 
-            _mapper.Map(user, u);
+            _mapper.Map<User>(dto);
             await _dbContext.SaveChangesAsync();
             return Ok(u);
         }
@@ -181,7 +194,7 @@ namespace WebApplication1.Controllers
 
 
         //Get only Courses
-        //I made this so that i can makje list of it ( options ) for users to select the course and get the student 
+        //I made this so that i can make list of it ( options ) for users to select the course and get the student 
         [HttpGet("courses")]
         public async Task<IActionResult> GetCourse()
         {
@@ -189,12 +202,15 @@ namespace WebApplication1.Controllers
             .Select(c => c.Course)
             .Distinct()
             .ToListAsync();
+
             if (courses.Count == 0)
             {
                 return NotFound("No Courses");
             }
             return Ok(courses);
         }
+
+
 
     }
 }

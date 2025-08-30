@@ -1,9 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './Card.css'
+import UpdateUser from './UpdateUser';
 
-const Card = ({ name, email, course, cgpa }) => {
+const Card = ({ name, email, course, cgpa, id, onStudentUpdated}) => {
 
     const titleName = name.substr(0,2).toUpperCase();
+    const [edit, setEdit] = useState(false);
+
+
+    const handleSave = (updatedStudent) => {
+    onStudentUpdated(updatedStudent); // send data up (to parent list or state)
+    setEdit(false); // close edit form
+  };
+
 
   return (
     <>
@@ -50,7 +59,20 @@ const Card = ({ name, email, course, cgpa }) => {
                 {cgpa > 0 ? 'Sernior' : 'Junior' }
                 </small></p>
         </div>
+        <button style={{
+                textAlign: "center",
+                width: "100%",
+                fontSize: "20px"  
+            }} className='mt-2 py-2 btn btn-success' onClick={() => setEdit(true)}>Edit</button>
     </div>
+
+            {edit && <UpdateUser student={{
+                id : id,
+                name : name,
+                email : email,
+                course : course,
+                cgpa : cgpa
+            }} onSave={handleSave} onCancel={() => setEdit(false)}/>}
     </>
   )
 }
