@@ -5,9 +5,9 @@ import InputFilter from '../components/InputFilter'
 const Service = () => {
   return (
     <div className='container-fluid d-flex justify-content-center align-items-center flex-column mt-5 text-center'>
-      <div className="col-lg-6 ">
+      {/* <div className="col-lg-6 ">
         <InputFilter />
-      </div>
+      </div> */}
         <h1>All Students</h1>
             <div style={{
                 margin: "40px 0px",
